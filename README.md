@@ -32,6 +32,7 @@ To run all tests (routes and persistence tests):
 #TODO
 
 Tests
+tableQ in BaseDAO as implicit val
 
 #Credits
 
