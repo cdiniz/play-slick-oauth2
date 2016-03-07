@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Slick Akka Http</title>
+</head>
+<body>
+<div>
+    <h2>Intro</h2>
+
+    <p>The Play Slick Rest is a very simple json rest api showing one way of using Play 2.5 with Slick 3.1 for database access.
+    </p>
+
+    <h2>Running</h2>
+
+    <p>
+        The project was thought to be used as a seed for creating akka-http projects with slick, so the implementation is minimal. The model is very simple, is a supplier with a name and description.
+</p>  <p>
+    The rest api has a get and a post (json), a get for get all the suppliers, and a post to add suppliers. You should view this info in swagger with more detail.
+</p>  <p>
+    For running the project go to section run, and run it.
+</p>  <p>
+    For running the project in sbt:
+
+    <pre><code>
+    $ sbt
+    > run
+    </code>
+    </pre>
+
+</div>
+
+
+
+<div>
+    <h2>Slick 3</h2>
+    <p>Models as case classes and slick 3 schemas extending from a BaseEntity and BaseTable </p>
+
+    <pre><code> case class Supplier(name: String,desc: String)  extends BaseEntity </code></pre>
+
+
+    <pre><code>
+    class SuppliersTable(tag: Tag) extends BaseTable[Supplier](tag, "suppliers") {
+      def name = column[String]("name")
+      def desc = column[String]("desc")
+      def * = (id, name, desc) <> (Supplier.tupled, Supplier.unapply)
+    }</code></pre>
+
+
+    <p>BaseEntity and BaseTable provide Id for the class and table.</p>
+
+</div>
+
+<div>
+    <h2>Generic DAO</h2>
+    <p>This seed has a generic slick DAO that can be used to implement a crud for an entity.</p>
+    <p>The generic DAO is used to create a suppliers DAO in Module:</p>
+
+    <pre><code>
+    @Provides
+    def provideSuppliersDAO : AbstractBaseDAO[SuppliersTable,Supplier] = new BaseDAO[SuppliersTable,Supplier]{
+          override protected val tableQ: dbConfig.driver.api.TableQuery[SuppliersTable] = SlickTables.suppliersTableQ
+    }
+    </code></pre>
+
+</div>
+
+</body>
+</html>
