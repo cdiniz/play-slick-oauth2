@@ -25,6 +25,6 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
     def * = (id, name, desc) <> (Supplier.tupled, Supplier.unapply)
   }
 
-  val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
+  implicit val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
 
 }
