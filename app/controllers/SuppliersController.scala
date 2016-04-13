@@ -24,16 +24,18 @@ class SuppliersController @Inject()(suppliersDAO : AbstractBaseDAO[SuppliersTabl
   }
 
   def insertSupplier = Action.async(parse.json) {
-    request => {
+    request =>
       {
         for {
           name <- (request.body \ "name").asOpt[String]
           desc <- (request.body \ "desc").asOpt[String]
         } yield {
-          suppliersDAO.insert(Supplier(0, name, desc)) map { n => Ok("Id of Supplier Added : " + n) }
+          (suppliersDAO.insert(Supplier(0, name, desc)) map { n => Created("Id of Supplier Added : " + n) }).recoverWith {
+            case e => Future {
+              InternalServerError("There was an error at the server")
+            }
+          }
         }
       }.getOrElse(Future{BadRequest("Wrong json format")})
-    }
   }
-
 }
