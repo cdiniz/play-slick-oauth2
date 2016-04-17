@@ -1,15 +1,17 @@
 package models.daos
 
-import models.entities.{Supplier, BaseEntity}
+import models.entities.{BaseEntity, Supplier}
 import models.persistence.SlickTables
-import models.persistence.SlickTables.{SuppliersTable, BaseTable}
+import models.persistence.SlickTables.{BaseTable, SuppliersTable}
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
-import slick.lifted.{CanBeQueryCondition}
+import slick.lifted.{CanBeQueryCondition, TableQuery}
+
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 
 trait AbstractBaseDAO[T,A] {
   def insert(row : A): Future[Long]
@@ -24,11 +26,9 @@ trait AbstractBaseDAO[T,A] {
 }
 
 
-abstract class BaseDAO[T <: BaseTable[A], A <: BaseEntity]() extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {
+class BaseDAO[T <: BaseTable[A], A <: BaseEntity]()(implicit val tableQ: TableQuery[T]) extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {
   protected lazy val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfigProvider.get[JdbcProfile](Play.current)
   import dbConfig.driver.api._
-
-  protected val tableQ: TableQuery[T]
 
   def insert(row : A): Future[Long] ={
     insert(Seq(row)).map(_.head)
