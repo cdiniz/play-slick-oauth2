@@ -4,7 +4,7 @@ import models.entities.{BaseEntity, Supplier}
 import models.persistence.SlickTables
 import models.persistence.SlickTables.{BaseTable, SuppliersTable}
 import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 import slick.lifted.{CanBeQueryCondition, TableQuery}
@@ -26,8 +26,7 @@ trait AbstractBaseDAO[T,A] {
 }
 
 
-class BaseDAO[T <: BaseTable[A], A <: BaseEntity]()(implicit val tableQ: TableQuery[T]) extends AbstractBaseDAO[T,A] with HasDatabaseConfig[JdbcProfile] {
-  protected lazy val dbConfig: DatabaseConfig[JdbcProfile] = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+abstract class BaseDAO[T <: BaseTable[A], A <: BaseEntity]()(implicit val tableQ: TableQuery[T]) extends AbstractBaseDAO[T,A] with HasDatabaseConfigProvider[JdbcProfile] {
   import dbConfig.driver.api._
 
   def insert(row : A): Future[Long] ={

@@ -1,4 +1,4 @@
-name := "play-slick-rest"
+name := "play-slick-oauth2"
 
 version := "0.0.1"
 
@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
   evolutions,
   "com.h2database" % "h2" % "1.4.191",
-  cache,
+  "com.nulab-inc" %% "play2-oauth2-provider" % "0.17.0",
   ws,
   specs2 % Test)
 
