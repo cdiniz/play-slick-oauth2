@@ -25,6 +25,9 @@ class Module extends AbstractModule {
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone)
     bind(classOf[SuppliersDAO]).to(classOf[SuppliersDAOImpl])
     bind(classOf[AccountsDAO]).to(classOf[AccountsDAOImpl])
+    bind(classOf[OauthAuthorizationCodesDAO]).to(classOf[OauthAuthorizationCodesDAOImpl])
+    bind(classOf[OauthAccessTokensDAO]).to(classOf[OauthAccessTokensDAOImpl])
+    bind(classOf[OauthClientsDAO]).to(classOf[OauthClientsDAOImpl])
   }
 
 }
