@@ -24,7 +24,7 @@ class Module extends AbstractModule {
     // Use the system clock as the default implementation of Clock
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone)
     bind(classOf[SuppliersDAO]).to(classOf[SuppliersDAOImpl])
-    bind(classOf[AccountDAO]).to(classOf[AccountDAOImpl])
+    bind(classOf[AccountsDAO]).to(classOf[AccountsDAOImpl])
   }
 
 }

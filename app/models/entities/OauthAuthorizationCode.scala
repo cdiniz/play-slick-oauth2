@@ -9,5 +9,5 @@ case class OauthAuthorizationCode(
                                    oauthClientId: Long,
                                    code: String,
                                    redirectUri: Option[String],
-                                   createdAt: java.sql.Timestamp)
+                                   createdAt: java.sql.Timestamp) extends BaseEntity
 

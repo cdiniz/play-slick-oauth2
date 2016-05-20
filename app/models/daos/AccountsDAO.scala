@@ -10,11 +10,11 @@ import play.api.db.slick.DatabaseConfigProvider
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait AccountDAO extends BaseDAO[AccountsTable,Account]{
+trait AccountsDAO extends BaseDAO[AccountsTable,Account]{
   def authenticate(email: String, password: String): Future[Option[Account]]
 }
 
-class AccountDAOImpl @Inject() (override protected val dbConfigProvider: DatabaseConfigProvider) extends AccountDAO  {
+class AccountsDAOImpl @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider) extends AccountsDAO  {
   private def digestString(s: String): String = {
     val md = MessageDigest.getInstance("SHA-1")
     md.update(s.getBytes)

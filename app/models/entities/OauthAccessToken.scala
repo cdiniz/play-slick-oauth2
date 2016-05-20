@@ -8,4 +8,4 @@ case class OauthAccessToken(
                              accessToken: String,
                              refreshToken: String,
                              createdAt: java.sql.Timestamp
-                           )
+                           ) extends BaseEntity
