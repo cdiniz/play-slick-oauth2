@@ -2,7 +2,7 @@ package models.daos
 
 import models.entities.{Account, OauthAccessToken, OauthClient}
 import models.persistence.SlickTables.OauthAccessTokenTable
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait OauthAccessTokensDAO extends BaseDAO[OauthAccessTokenTable,OauthAccessToken]{

@@ -1,8 +1,5 @@
 package models.entities
 
-
-import org.joda.time.DateTime
-
 case class OauthAuthorizationCode(
                                    id: Long,
                                    accountId: Long,
