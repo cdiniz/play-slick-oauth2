@@ -1,4 +1,4 @@
-name := "play-slick-rest"
+name := "play-slick-oauth2"
 
 version := "0.0.1"
 
