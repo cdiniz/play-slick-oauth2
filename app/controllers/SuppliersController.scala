@@ -1,15 +1,17 @@
 package controllers
 
 import javax.inject._
-import models.daos.{AbstractBaseDAO, BaseDAO}
+
+import models.daos.{AbstractBaseDAO, BaseDAO, SuppliersDAO}
 import models.entities.Supplier
 import models.persistence.SlickTables.SuppliersTable
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc._
-import scala.concurrent.{Future, ExecutionContext}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SuppliersController @Inject()(suppliersDAO : AbstractBaseDAO[SuppliersTable,Supplier])(implicit exec: ExecutionContext) extends Controller {
+class SuppliersController @Inject()(suppliersDAO : SuppliersDAO)(implicit exec: ExecutionContext) extends Controller {
 
   implicit val supplierWrites = new Writes[Supplier] {
     def writes(sup: Supplier) = Json.obj(
