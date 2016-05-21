@@ -1,6 +1,9 @@
 package models.persistence
 
+import java.sql.{Timestamp}
+
 import models.entities._
+import org.joda.time.DateTime
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
@@ -15,7 +18,7 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
 
   abstract class BaseTable[T](tag: Tag, name: String) extends Table[T](tag, name) {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def createdAt = column[java.sql.Timestamp]("created_at")
+    def createdAt = column[Timestamp]("created_at")
   }
 
   case class SimpleSupplier(name: String, desc: String)

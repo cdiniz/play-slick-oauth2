@@ -1,5 +1,6 @@
 package models.entities
 
+import java.sql.Timestamp
 
 case class OauthAccessToken(
                              id: Long,
@@ -7,5 +8,5 @@ case class OauthAccessToken(
                              oauthClientId: Long,
                              accessToken: String,
                              refreshToken: String,
-                             createdAt: java.sql.Timestamp
+                             createdAt: Timestamp
                            ) extends BaseEntity

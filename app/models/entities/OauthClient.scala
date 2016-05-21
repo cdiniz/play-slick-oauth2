@@ -1,5 +1,7 @@
 package models.entities
 
+import java.sql.Timestamp
+
 case class OauthClient(
                         id: Long,
                         ownerId: Long,
@@ -7,6 +9,6 @@ case class OauthClient(
                         clientId: String,
                         clientSecret: String,
                         redirectUri: Option[String],
-                        createdAt: java.sql.Timestamp
+                        createdAt: Timestamp
                       ) extends BaseEntity
 

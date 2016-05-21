@@ -14,21 +14,25 @@ trait OauthClientsDAO extends BaseDAO[OauthClientTable,OauthClient]{
 }
 
 class OauthClientsDAOImpl @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider, accountsDAO : AccountsDAO) extends OauthClientsDAO  {
+
+  import dbConfig.driver.api._
+
+
   override def validate(clientId: String, clientSecret: String, grantType: String): Future[Boolean] = {
-    findByFilter(oauthClient => oauthClient.clientId == clientId && oauthClient.clientSecret == clientSecret)
+    findByFilter(oauthClient => oauthClient.clientId === clientId && oauthClient.clientSecret === clientSecret)
       .map(_.headOption.map(client => grantType == client.grantType || grantType == "refresh_token")
                        .getOrElse(false))
   }
 
   override def findClientCredentials(clientId: String, clientSecret: String): Future[Option[Account]] = {
     for {
-      accountId <- findByFilter(oauthClient => oauthClient.clientId == clientId && oauthClient.clientSecret == clientSecret).map(_.headOption.map(_.ownerId))
+      accountId <- findByFilter(oauthClient => oauthClient.clientId === clientId && oauthClient.clientSecret === clientSecret).map(_.headOption.map(_.ownerId))
       account <- accountsDAO.findById(accountId.get)
     } yield account
   }
 
   override def findByClientId(clientId: String): Future[Option[OauthClient]] = {
-    findByFilter(_.clientId == clientId).map(_.headOption)
+    findByFilter(_.clientId === clientId).map(_.headOption)
   }
 }
 

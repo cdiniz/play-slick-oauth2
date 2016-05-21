@@ -18,11 +18,14 @@ trait OauthAccessTokensDAO extends BaseDAO[OauthAccessTokenTable,OauthAccessToke
   def delete(account: Account, client: OauthClient): Future[Int]
   def refresh(account: Account, client: OauthClient): Future[OauthAccessToken]
   def findByAccessToken(accessToken: String): Future[Option[OauthAccessToken]]
-  def findByAuthorized(account: Account, clientId: String): Future[Option[OauthAccessToken]]
+  def findByAuthorized(account: Account, clientId: Long): Future[Option[OauthAccessToken]]
   def findByRefreshToken(refreshToken: String): Future[Option[OauthAccessToken]]
 }
 
 class OauthAccessTokensDAOImpl  @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider) extends OauthAccessTokensDAO {
+
+  import dbConfig.driver.api._
+
   override def create(account: Account, client: OauthClient): Future[OauthAccessToken] = {
     def randomString(length: Int) = new Random(new SecureRandom()).alphanumeric.take(length).mkString
     val accessToken = randomString(40)
@@ -40,7 +43,7 @@ class OauthAccessTokensDAOImpl  @Inject()(override protected val dbConfigProvide
   }
 
   override def delete(account: Account, client: OauthClient): Future[Int] = {
-    deleteByFilter( oauthToken => oauthToken.accountId == account.id && oauthToken.oauthClientId == client.id)
+    deleteByFilter( oauthToken => oauthToken.accountId === account.id && oauthToken.oauthClientId === client.id)
   }
 
   override def refresh(account: Account, client: OauthClient): Future[OauthAccessToken] = {
@@ -48,18 +51,17 @@ class OauthAccessTokensDAOImpl  @Inject()(override protected val dbConfigProvide
     create(account, client)
   }
 
-  override def findByAuthorized(account: Account, clientId: String): Future[Option[OauthAccessToken]] = {
-    findByFilter( oauthToken => oauthToken.accountId == account.id && oauthToken.oauthClientId == clientId).map(_.headOption)
+  override def findByAuthorized(account: Account, clientId: Long): Future[Option[OauthAccessToken]] = {
+    findByFilter( oauthToken => oauthToken.accountId === account.id && oauthToken.oauthClientId === clientId).map(_.headOption)
   }
 
   override def findByAccessToken(accessToken: String): Future[Option[OauthAccessToken]] = {
-    findByFilter(_.accessToken == accessToken).map(_.headOption)
+    findByFilter(_.accessToken === accessToken).map(_.headOption)
   }
 
   override def findByRefreshToken(refreshToken: String): Future[Option[OauthAccessToken]] = {
-    //TODO compare expiration date with create date
     val expireAt = new Timestamp(new DateTime().minusMonths(1).getMillis)
-    findByFilter(_.refreshToken == refreshToken).map(_.headOption)
+    findByFilter( token => token.refreshToken === refreshToken && token.createdAt > expireAt).map(_.headOption)
 
   }
 }

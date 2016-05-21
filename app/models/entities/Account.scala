@@ -1,5 +1,5 @@
 package models.entities
 
-import org.joda.time.DateTime
+import java.sql.Timestamp
 
-case class Account(id: Long, email: String, password: String, createdAt: java.sql.Timestamp) extends BaseEntity
+case class Account(id: Long, email: String, password: String, createdAt: Timestamp) extends BaseEntity
