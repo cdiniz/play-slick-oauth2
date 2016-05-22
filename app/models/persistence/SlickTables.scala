@@ -3,7 +3,6 @@ package models.persistence
 import java.sql.{Timestamp}
 
 import models.entities._
-import org.joda.time.DateTime
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
@@ -21,16 +20,6 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
     def createdAt = column[Timestamp]("created_at")
   }
 
-  case class SimpleSupplier(name: String, desc: String)
-
-  class SuppliersTable(tag: Tag) extends BaseTable[Supplier](tag, "suppliers") {
-    def name = column[String]("name")
-    def desc = column[String]("desc")
-    def * = (id, name, desc) <> (Supplier.tupled, Supplier.unapply)
-  }
-
-  implicit val suppliersTableQ : TableQuery[SuppliersTable] = TableQuery[SuppliersTable]
-
   class AccountsTable(tag : Tag) extends BaseTable[Account](tag, "accounts") {
     def email = column[String]("email")
     def password = column[String]("password")
@@ -40,7 +29,7 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
   implicit val accountsTableQ : TableQuery[AccountsTable] = TableQuery[AccountsTable]
 
   class OauthClientTable(tag : Tag) extends BaseTable[OauthClient](tag,"oauth_clients") {
-    def ownerId = column[Long]("onwner_id")
+    def ownerId = column[Long]("owner_id")
     def grantType = column[String]("grant_type")
     def clientId = column[String]("client_id")
     def clientSecret = column[String]("client_secret")

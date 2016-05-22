@@ -1,14 +1,10 @@
 package models.daos
 
-import models.entities.{BaseEntity, Supplier}
-import models.persistence.SlickTables
-import models.persistence.SlickTables.{BaseTable, SuppliersTable}
-import play.api.Play
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig, HasDatabaseConfigProvider}
-import slick.backend.DatabaseConfig
+import models.entities.BaseEntity
+import models.persistence.SlickTables.BaseTable
+import play.api.db.slick.HasDatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.lifted.{CanBeQueryCondition, TableQuery}
-
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 

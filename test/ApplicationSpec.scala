@@ -2,7 +2,6 @@ import java.time.Clock
 
 import com.google.inject.{AbstractModule, Provides}
 import models.daos.AbstractBaseDAO
-import models.entities.Supplier
 import models.persistence.SlickTables.SuppliersTable
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test._

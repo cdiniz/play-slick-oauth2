@@ -1,7 +1,5 @@
 # --- !Ups
 
-create table "suppliers" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"name" VARCHAR(254) NOT NULL,"desc" VARCHAR(254) NOT NULL,"created_at" TIMESTAMP DEFAULT now() NOT NULL);
-
 create table "accounts" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"email" VARCHAR(254) NOT NULL,"password" VARCHAR(254) NOT NULL,"created_at" TIMESTAMP DEFAULT now() NOT NULL);
 
 create table "oauth_clients" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"owner_id"  BIGINT NOT NULL,"grant_type" VARCHAR(254) NOT NULL,"client_id" VARCHAR(254) NOT NULL,"client_secret" VARCHAR(254) NOT NULL,"redirect_uri" VARCHAR(254),"created_at" TIMESTAMP DEFAULT now() NOT NULL);
@@ -17,8 +15,16 @@ alter table "oauth_access_tokens" add constraint "oauth_access_token_account_fk"
 alter table "oauth_access_tokens" add constraint "oauth_access_token_client_fk" foreign key("oauth_client_id") references "oauth_clients"("id") on update NO ACTION on delete NO ACTION;
 
 
+insert into "accounts"("email", "password") values ('bob@example.com', '48181acd22b3edaebc8a447868a7df7ce629920a'); -- password:bob
+insert into "accounts"("email", "password") values ('alice@example.com', '522b276a356bdf39013dfabea2cd43e141ecc9e8'); -- password:alice
+insert into "oauth_clients"("owner_id", "grant_type", "client_id", "client_secret")
+  values (1, 'client_credentials', 'bob_client_id', 'bob_client_secret');
+insert into "oauth_clients"("owner_id", "grant_type", "client_id", "client_secret", "redirect_uri")
+  values (2, 'authorization_code', 'alice_client_id', 'alice_client_secret', 'http://localhost:3000/callback');
+insert into "oauth_clients"("owner_id", "grant_type", "client_id", "client_secret")
+  values (2, 'password', 'alice_client_id2', 'alice_client_secret2');
+
 # --- !Downs
-drop table "suppliers";
 drop table "oauth_authorization_codes";
 drop table "oauth_access_tokens";
 drop table "oauth_clients";

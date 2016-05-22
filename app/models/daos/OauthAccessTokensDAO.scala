@@ -18,11 +18,11 @@ trait OauthAccessTokensDAO extends BaseDAO[OauthAccessTokenTable,OauthAccessToke
   def delete(account: Account, client: OauthClient): Future[Int]
   def refresh(account: Account, client: OauthClient): Future[OauthAccessToken]
   def findByAccessToken(accessToken: String): Future[Option[OauthAccessToken]]
-  def findByAuthorized(account: Account, clientId: Long): Future[Option[OauthAccessToken]]
+  def findByAuthorized(account: Account, clientId: String): Future[Option[OauthAccessToken]]
   def findByRefreshToken(refreshToken: String): Future[Option[OauthAccessToken]]
 }
 
-class OauthAccessTokensDAOImpl  @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider) extends OauthAccessTokensDAO {
+class OauthAccessTokensDAOImpl  @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider, oauthClientsDAO: OauthClientsDAO) extends OauthAccessTokensDAO {
 
   import dbConfig.driver.api._
 
@@ -51,8 +51,12 @@ class OauthAccessTokensDAOImpl  @Inject()(override protected val dbConfigProvide
     create(account, client)
   }
 
-  override def findByAuthorized(account: Account, clientId: Long): Future[Option[OauthAccessToken]] = {
-    findByFilter( oauthToken => oauthToken.accountId === account.id && oauthToken.oauthClientId === clientId).map(_.headOption)
+  override def findByAuthorized(account: Account, clientId: String): Future[Option[OauthAccessToken]] = {
+    val query = for {
+        oauthClient <- oauthClientsDAO.tableQ
+        token <- tableQ if oauthClient.id === token.oauthClientId && oauthClient.clientId === clientId && token.accountId === account.id
+      } yield token
+    db.run(query.result).map(_.headOption)
   }
 
   override def findByAccessToken(accessToken: String): Future[Option[OauthAccessToken]] = {

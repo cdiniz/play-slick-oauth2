@@ -34,5 +34,6 @@ class OauthClientsDAOImpl @Inject()(override protected val dbConfigProvider: Dat
   override def findByClientId(clientId: String): Future[Option[OauthClient]] = {
     findByFilter(_.clientId === clientId).map(_.headOption)
   }
+
 }
 

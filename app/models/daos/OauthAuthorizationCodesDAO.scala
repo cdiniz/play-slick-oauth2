@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 trait OauthAuthorizationCodesDAO extends BaseDAO[OauthAuthorizationCodeTable,OauthAuthorizationCode]{
   def findByCode(code: String): Future[Option[OauthAuthorizationCode]]
-  def delete(code: String): Unit
+  def delete(code: String): Future[Int]
 }
 
 class OauthAuthorizationCodesDAOImpl  @Inject()(override protected val dbConfigProvider: DatabaseConfigProvider) extends OauthAuthorizationCodesDAO {
@@ -25,5 +25,5 @@ class OauthAuthorizationCodesDAOImpl  @Inject()(override protected val dbConfigP
     findByFilter(authCode => authCode.code === code && authCode.createdAt > expireAt).map(_.headOption)
   }
 
-  override def delete(code: String): Unit = deleteByFilter(_.code == code)
+  override def delete(code: String): Future[Int] = deleteByFilter(_.code == code)
 }
