@@ -13,6 +13,6 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.191",
   "com.nulab-inc" %% "play2-oauth2-provider" % "0.17.0",
   ws,
-  specs2 % Test)
+  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % Test)
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
