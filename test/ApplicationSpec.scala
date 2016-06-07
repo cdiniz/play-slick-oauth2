@@ -37,7 +37,8 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
     }
 
     "return an error with invalid client when try to create a token with invalid credentials" in {
-      val resources = route(app, FakeRequest(POST, "/oauth/access_token").withFormUrlEncodedBody("client_id" -> "wrong id", "client_secret" -> "wrong secret", "grant_type" -> "client_credentials")).get
+      val resources = route(app, FakeRequest(POST, "/oauth/access_token").withFormUrlEncodedBody("client_id" -> "wrong id",
+        "client_secret" -> "wrong secret", "grant_type" -> "client_credentials")).get
 
       status(resources) mustBe UNAUTHORIZED
 
@@ -47,7 +48,19 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
     }
 
-    "return a valid auth token and refresh token with valid credentials" in {
+    "return an error with invalid client when try to create a token with invalid authorizationCode" in{
+      val resources = route(app, FakeRequest(POST, "/oauth/access_token").withFormUrlEncodedBody("client_id" -> "bob_client_id",
+        "client_secret" -> "bob_client_secret", "redirect_uri" -> "http://localhost:3000/callback", "code" -> "wrong code", "grant_type" -> "authorization_code")).get
+
+      status(resources) mustBe UNAUTHORIZED
+
+      val tokenErrorResponse = contentAsJson(resources).as[TokenErrorResponse]
+
+      tokenErrorResponse.error mustBe "invalid_client"
+
+    }
+
+    "return a valid token and refresh token with valid credentials" in {
       val tokenResp = route(app, FakeRequest(POST, "/oauth/access_token").withFormUrlEncodedBody("client_id" -> "bob_client_id",
         "client_secret" -> "bob_client_secret", "grant_type" -> "client_credentials")).get
 
@@ -57,6 +70,30 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
       tokenResponse.token_type mustBe "Bearer"
       tokenResponse.access_token must not be(tokenResponse.refresh_token)
+    }
+
+    "return a valid token when try to create a token with valid password" in {
+      val resources = route(app, FakeRequest(POST, "/oauth/access_token").withFormUrlEncodedBody("client_id" -> "alice_client_id2",
+        "client_secret" -> "alice_client_secret2", "grant_type" -> "password", "username" -> "alice@example.com", "password" -> "alice")).get
+
+      status(resources) mustBe OK
+
+      val tokenResponse = contentAsJson(resources).as[TokenResponse]
+      tokenResponse.token_type mustBe "Bearer"
+      tokenResponse.access_token must not be(tokenResponse.refresh_token)
+
+    }
+
+    "return a valid token when try to create a token with authorizationCode" in{
+      val resources = route(app, FakeRequest(POST, "/oauth/access_token").withFormUrlEncodedBody("client_id" -> "alice_client_id",
+        "client_secret" -> "alice_client_secret", "redirect_uri" -> "http://localhost:3000/callback", "code" -> "bob_code", "grant_type" -> "authorization_code")).get
+
+      status(resources) mustBe OK
+
+      val tokenResponse = contentAsJson(resources).as[TokenResponse]
+      tokenResponse.token_type mustBe "Bearer"
+      tokenResponse.access_token must not be(tokenResponse.refresh_token)
+
     }
 
     "return error when try to refresh the token with an invalid token" in {

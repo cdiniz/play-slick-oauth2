@@ -25,5 +25,5 @@ class OauthAuthorizationCodesDAOImpl  @Inject()(override protected val dbConfigP
     findByFilter(authCode => authCode.code === code && authCode.createdAt > expireAt).map(_.headOption)
   }
 
-  override def delete(code: String): Future[Int] = deleteByFilter(_.code == code)
+  override def delete(code: String): Future[Int] = deleteByFilter(_.code === code)
 }
