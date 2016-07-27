@@ -6,6 +6,8 @@ import models.entities._
 import play.api.Play
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfig}
 import slick.driver.JdbcProfile
+import slick.collection.heterogeneous.{ HList, HCons, HNil }
+import slick.collection.heterogeneous.syntax._
 
 /**
   * The companion object.
@@ -20,10 +22,42 @@ object SlickTables extends HasDatabaseConfig[JdbcProfile] {
     def createdAt = column[Timestamp]("created_at")
   }
 
+  type AccountHList = Long :: String :: String :: Timestamp :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: Long :: HNil
+
   class AccountsTable(tag : Tag) extends BaseTable[Account](tag, "accounts") {
     def email = column[String]("email")
     def password = column[String]("password")
-    def * = (id, email, password, createdAt) <> (Account.tupled, Account.unapply)
+    def field5 = column[Long]("field5")
+    def field6 = column[Long]("field6")
+    def field7 = column[Long]("field7")
+    def field8 = column[Long]("field8")
+    def field9 = column[Long]("field9")
+    def field10 = column[Long]("field10")
+    def field11 = column[Long]("field11")
+    def field12 = column[Long]("field12")
+    def field13 = column[Long]("field13")
+    def field14 = column[Long]("field14")
+    def field15 = column[Long]("field15")
+    def field16 = column[Long]("field16")
+    def field17 = column[Long]("field17")
+    def field18 = column[Long]("field18")
+    def field19 = column[Long]("field19")
+    def field20 = column[Long]("field20")
+    def field21 = column[Long]("field21")
+    def field22 = column[Long]("field22")
+    def field23 = column[Long]("field23")
+    def * = id :: email :: password :: createdAt :: field5 :: field6 :: field7 :: field8 :: field9 :: field10 :: field11 :: field12 :: field13 :: field14 :: field15 :: field16 :: field17 :: field18 :: field19 :: field20 :: field21 :: field22 :: field23 ::  HNil <> (createAccount, extractAccount)
+  }
+
+  // Mapping from HList to case class:
+  def createAccount(data: AccountHList): Account = data match {
+    case id :: email :: password :: createdAt :: field5 :: field6 :: field7 :: field8 :: field9 :: field10 :: field11 :: field12 :: field13 :: field14 :: field15 :: field16 :: field17 :: field18 :: field19 :: field20 :: field21 :: field22 :: field23 :: HNil =>
+      Account(id, email, password, createdAt, field5, field6, field7, field8, field9, field10, field11, field12, field13, field14, field15, field16, field17, field18, field19, field20, field21, field22, field23)
+  }
+  // Mapping from case class to Hlist
+  def extractAccount(account: Account): Option[AccountHList] = account match {
+    case Account(id,email,password,createdAt, field5, field6, field7, field8, field9, field10, field11, field12, field13, field14, field15, field16, field17, field18, field19, field20, field21, field22, field23)
+    => Some(id :: email :: password :: createdAt :: field5 :: field6 :: field7 :: field8 :: field9 :: field10 :: field11 :: field12 :: field13 :: field14 :: field15 :: field16 :: field17 :: field18 :: field19 :: field20 :: field21 :: field22 :: field23 :: HNil)
   }
 
   implicit val accountsTableQ : TableQuery[AccountsTable] = TableQuery[AccountsTable]
